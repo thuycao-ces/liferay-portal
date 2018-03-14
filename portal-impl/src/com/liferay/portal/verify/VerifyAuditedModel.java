@@ -16,6 +16,7 @@ package com.liferay.portal.verify;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
@@ -265,7 +266,33 @@ public class VerifyAuditedModel extends VerifyProcess {
 		throws Exception {
 
 		try (LoggingTimer loggingTimer = new LoggingTimer(
-				verifiableAuditedModel.getTableName())) {
+				verifiableAuditedModel.getTableName());
+			Connection con = DataAccess.getConnection()) {
+
+			String relatedModelName =
+				verifiableAuditedModel.getRelatedModelName();
+
+			if (relatedModelName != null) {
+				_verifyFromRelatedModel(
+					con, verifiableAuditedModel, "companyId");
+
+				_verifyFromRelatedModel(con, verifiableAuditedModel, "userId");
+
+				if (verifiableAuditedModel.isUpdateDates()) {
+					_verifyFromRelatedModel(
+						con, verifiableAuditedModel, "createDate");
+
+					_verifyFromRelatedModel(
+						con, verifiableAuditedModel, "modifiedDate");
+				}
+
+				DBInspector dbInspector = new DBInspector(con);
+
+				if (dbInspector.hasColumn(relatedModelName, "userName")) {
+					_verifyFromRelatedModel(
+						con, verifiableAuditedModel, "userName");
+				}
+			}
 
 			StringBundler sb = new StringBundler(8);
 
@@ -355,6 +382,24 @@ public class VerifyAuditedModel extends VerifyProcess {
 		sb.append(" = ?");
 
 		return con.prepareStatement(sb.toString());
+	}
+
+	private void _verifyFromRelatedModel(
+			Connection con, VerifiableAuditedModel verifiableAuditedModel,
+			String columnName)
+		throws Exception {
+
+		String sql = StringBundler.concat(
+			"update ", verifiableAuditedModel.getTableName(), " set ",
+			columnName, " = (select ", columnName, " from ",
+			verifiableAuditedModel.getRelatedModelName(), " where ",
+			verifiableAuditedModel.getTableName(), StringPool.PERIOD,
+			verifiableAuditedModel.getJoinByTableName(), " = ",
+			verifiableAuditedModel.getRelatedModelName(), StringPool.PERIOD,
+			verifiableAuditedModel.getRelatedPKColumnName(),
+			") where userName is null");
+
+		runSQL(con, sql);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
