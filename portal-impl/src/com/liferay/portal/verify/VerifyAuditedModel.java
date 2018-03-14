@@ -35,8 +35,10 @@ import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -48,7 +50,7 @@ public class VerifyAuditedModel extends VerifyProcess {
 	public void verify(VerifiableAuditedModel... verifiableAuditedModels)
 		throws Exception {
 
-		List<String> unverifiedTableNames = new ArrayList<>();
+		Set<String> unverifiedTableNames = new HashSet<>();
 
 		for (VerifiableAuditedModel verifiableAuditedModel :
 				verifiableAuditedModels) {
@@ -56,19 +58,24 @@ public class VerifyAuditedModel extends VerifyProcess {
 			unverifiedTableNames.add(verifiableAuditedModel.getTableName());
 		}
 
-		List<VerifyAuditedModelCallable> verifyAuditedModelCallables =
-			new ArrayList<>(unverifiedTableNames.size());
-
 		while (!unverifiedTableNames.isEmpty()) {
-			int count = unverifiedTableNames.size();
+			List<VerifyAuditedModelCallable> verifyAuditedModelCallables =
+				new ArrayList<>(unverifiedTableNames.size());
 
 			for (VerifiableAuditedModel verifiableAuditedModel :
 					verifiableAuditedModels) {
 
-				if (unverifiedTableNames.contains(
-						verifiableAuditedModel.getJoinByTableName()) ||
-					!unverifiedTableNames.contains(
-						verifiableAuditedModel.getTableName())) {
+				String tableName = verifiableAuditedModel.getTableName();
+
+				if (!unverifiedTableNames.contains(tableName)) {
+					continue;
+				}
+
+				String relatedModelName =
+					verifiableAuditedModel.getRelatedModelName();
+
+				if ((relatedModelName != null) &&
+					unverifiedTableNames.contains(relatedModelName)) {
 
 					continue;
 				}
@@ -78,17 +85,16 @@ public class VerifyAuditedModel extends VerifyProcess {
 
 				verifyAuditedModelCallables.add(verifyAuditedModelCallable);
 
-				unverifiedTableNames.remove(
-					verifiableAuditedModel.getTableName());
+				unverifiedTableNames.remove(tableName);
 			}
 
-			if (unverifiedTableNames.size() == count) {
+			if (verifyAuditedModelCallables.isEmpty()) {
 				throw new VerifyException(
 					"Circular dependency detected " + unverifiedTableNames);
 			}
-		}
 
-		doVerify(verifyAuditedModelCallables);
+			doVerify(verifyAuditedModelCallables);
+		}
 	}
 
 	@Override
