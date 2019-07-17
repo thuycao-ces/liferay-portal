@@ -42,7 +42,6 @@
 		>
 			<jvmarg if:true="${jvm.debug}" line="${jpda.settings}" />
 			<jvmarg value="-Xmx${db.build.java.mx}" />
-			<jvmarg value="-XX:MaxPermSize=${db.build.java.maxpermsize}" />
 			<arg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
 			<arg value="db.database.name=${database.name}" />
 			<arg value="db.database.types=${database.types}" />
