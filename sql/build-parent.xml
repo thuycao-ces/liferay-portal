@@ -5,9 +5,6 @@
 
 	<mkdir dir="log" />
 
-	<var name="fork.mode" value="false" />
-	<var if:true="${jvm.debug}" name="fork.mode" value="true" />
-
 	<target name="build-db">
 		<if>
 			<available file="${project.dir}/modules/private/apps/portal/portal-dao-db" type="dir" />
@@ -41,7 +38,7 @@
 		<java
 			classname="com.liferay.portal.tools.DBBuilder"
 			classpathref="db.builder.classpath"
-			fork="${fork.mode}"
+			fork="true"
 		>
 			<jvmarg if:true="${jvm.debug}" line="${jpda.settings}" />
 			<jvmarg value="-Xmx${db.build.java.mx}" />
@@ -102,7 +99,7 @@
 		<java
 			classname="com.liferay.portal.tools.HypersonicLoader"
 			classpathref="project.classpath"
-			fork="${fork.mode}"
+			fork="true"
 		>
 			<jvmarg if:true="${jvm.debug}" line="${jpda.settings}" />
 			<arg value="-Dexternal-properties=com/liferay/portal/tools/dependencies/portal-tools.properties" />
