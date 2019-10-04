@@ -334,8 +334,15 @@ public class FriendlyURLEntryLocalServiceImpl
 		int maxLength = ModelHintsUtil.getMaxLength(
 			FriendlyURLEntryLocalization.class.getName(), "urlTitle");
 
-		String curUrlTitle = normalizedUrlTitle.substring(
-			0, Math.min(maxLength, normalizedUrlTitle.length()));
+		String prefix = normalizedUrlTitle;
+		int endPos = urlTitle.length();
+
+		while (prefix.length() > maxLength) {
+			prefix = FriendlyURLNormalizerUtil.normalizeWithEncoding(
+				urlTitle.substring(0, --endPos));
+		}
+
+		String curUrlTitle = prefix;
 
 		for (int i = 1;; i++) {
 			FriendlyURLEntryLocalization friendlyURLEntryLocalization =
@@ -350,13 +357,12 @@ public class FriendlyURLEntryLocalServiceImpl
 
 			String suffix = StringPool.DASH + i;
 
-			String prefix = normalizedUrlTitle.substring(
-				0,
-				Math.min(
-					maxLength - suffix.length(), normalizedUrlTitle.length()));
+			while (prefix.length() + suffix.length() > maxLength) {
+				prefix = FriendlyURLNormalizerUtil.normalizeWithEncoding(
+					urlTitle.substring(0, --endPos));
+			}
 
-			curUrlTitle = FriendlyURLNormalizerUtil.normalizeWithEncoding(
-				prefix + suffix);
+			curUrlTitle = prefix + suffix;
 		}
 
 		return curUrlTitle;
