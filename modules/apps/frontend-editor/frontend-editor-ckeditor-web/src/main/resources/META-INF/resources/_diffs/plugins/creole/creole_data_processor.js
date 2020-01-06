@@ -243,7 +243,13 @@
 
 			if (tagName == TAG_PARAGRAPH) {
 				if (!instance._isLastItemNewLine()) {
-					instance._endResult.push(NEW_LINE);
+					if (instance._hasParentNode(element, 'table', Infinity)) {
+						instance._endResult.push(
+							STR_LIST_ITEM_ESCAPE_CHARACTERS
+						);
+					} else {
+						instance._endResult.push(NEW_LINE);
+					}
 				}
 			} else if (
 				tagName == TAG_UNORDERED_LIST ||
@@ -437,14 +443,16 @@
 			instance._listsStack.push(TAG_ORDERED_LIST_ITEM);
 		},
 
-		_handleParagraph(_element, _listTagsIn, listTagsOut) {
+		_handleParagraph(element, _listTagsIn, listTagsOut) {
 			var instance = this;
 
-			if (instance._isDataAvailable()) {
-				instance._appendNewLines(2);
-			}
+			if (!instance._hasParentNode(element, 'table', Infinity)) {
+				if (instance._isDataAvailable()) {
+					instance._appendNewLines(2);
+				}
 
-			listTagsOut.push(NEW_LINE);
+				listTagsOut.push(NEW_LINE);
+			}
 		},
 
 		_handlePre(_element, listTagsIn, listTagsOut) {
