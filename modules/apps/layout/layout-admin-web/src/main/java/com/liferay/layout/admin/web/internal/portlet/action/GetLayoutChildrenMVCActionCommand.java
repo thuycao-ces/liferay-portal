@@ -19,6 +19,7 @@ import com.liferay.layout.admin.web.internal.configuration.LayoutConverterConfig
 import com.liferay.layout.admin.web.internal.display.context.LayoutsAdminDisplayContext;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -77,8 +78,15 @@ public class GetLayoutChildrenMVCActionCommand extends BaseMVCActionCommand {
 				_portal.getLiferayPortletResponse(actionResponse),
 				_stagingGroupHelper);
 
-		JSONArray jsonArray = layoutsAdminDisplayContext.getLayoutsJSONArray(
-			layout.getLayoutId(), layout.isPrivateLayout());
+		JSONArray jsonArray = null;
+
+		if (layout != null) {
+			jsonArray = layoutsAdminDisplayContext.getLayoutsJSONArray(
+				layout.getLayoutId(), layout.isPrivateLayout());
+		}
+		else {
+			jsonArray = JSONFactoryUtil.createJSONArray();
+		}
 
 		JSONObject jsonObject = JSONUtil.put("children", jsonArray);
 
