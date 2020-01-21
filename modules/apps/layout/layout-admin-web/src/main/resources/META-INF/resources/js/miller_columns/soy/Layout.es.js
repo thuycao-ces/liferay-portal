@@ -308,28 +308,18 @@ class Layout extends Component {
 			this._moveLayoutColumnItemOnServer(
 				parentPlid,
 				sourceItemPlid,
-				priority
+				priority,
+				this._draggingItemParentPlid
 			)
 				.then(response => {
-					let nextPromise = response;
-
-					if (this._draggingItemParentPlid !== '0') {
-						nextPromise = this._getItemChildren(
+					if (response.children && response.children.length === 0) {
+						layoutColumns = this._removeHasChildArrow(
+							layoutColumns,
 							this._draggingItemParentPlid
-						).then(response => {
-							if (
-								response.children &&
-								response.children.length === 0
-							) {
-								layoutColumns = this._removeHasChildArrow(
-									layoutColumns,
-									this._draggingItemParentPlid
-								);
-							}
-						});
+						);
 					}
 
-					return nextPromise;
+					return response;
 				})
 				.then(() => {
 					this.layoutColumns = layoutColumns;
@@ -500,11 +490,12 @@ class Layout extends Component {
 	 * @return {Promise<object>}
 	 * @review
 	 */
-	_moveLayoutColumnItemOnServer(parentPlid, plid, priority) {
+	_moveLayoutColumnItemOnServer(parentPlid, plid, priority, checkPlid) {
 		const formData = new FormData();
 
 		formData.append(`${this.portletNamespace}plid`, plid);
 		formData.append(`${this.portletNamespace}parentPlid`, parentPlid);
+		formData.append(`${this.portletNamespace}checkPlid`, checkPlid);
 
 		if (priority) {
 			formData.append(`${this.portletNamespace}priority`, priority);

@@ -72,6 +72,8 @@ import javax.portlet.ActionResponse;
 import javax.portlet.MutableRenderParameters;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
@@ -118,6 +120,8 @@ public class GroupPagesPortlet extends MVCPortlet {
 	public void processAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws IOException, PortletException {
+
+		setRequestAttributes(actionRequest, actionResponse);
 
 		super.processAction(actionRequest, actionResponse);
 
@@ -186,26 +190,7 @@ public class GroupPagesPortlet extends MVCPortlet {
 				}
 			}
 
-			renderRequest.setAttribute(
-				ApplicationListWebKeys.GROUP_PROVIDER, _groupProvider);
-			renderRequest.setAttribute(
-				LayoutAdminWebKeys.LAYOUT_CONVERTER_REGISTRY,
-				_layoutConverterRegistry);
-			renderRequest.setAttribute(
-				LayoutAdminWebKeys.LAYOUT_COPY_HELPER, _layoutCopyHelper);
-			renderRequest.setAttribute(
-				LayoutEditorTypeConfiguration.class.getName(),
-				_layoutEditorTypeConfiguration);
-			renderRequest.setAttribute(
-				StagingGroupHelper.class.getName(), _stagingGroupHelper);
-
-			renderRequest.setAttribute(
-				LayoutAdminWebKeys.LAYOUT_PAGE_LAYOUT_ADMIN_DISPLAY_CONTEXT,
-				new LayoutsAdminDisplayContext(
-					_layoutConverterConfiguration,
-					_portal.getLiferayPortletRequest(renderRequest),
-					_portal.getLiferayPortletResponse(renderResponse),
-					_stagingGroupHelper));
+			setRequestAttributes(renderRequest, renderResponse);
 
 			super.doDispatch(renderRequest, renderResponse);
 		}
@@ -243,6 +228,31 @@ public class GroupPagesPortlet extends MVCPortlet {
 		}
 
 		return false;
+	}
+
+	protected void setRequestAttributes(
+		PortletRequest portletRequest, PortletResponse portletResponse) {
+
+		portletRequest.setAttribute(
+			ApplicationListWebKeys.GROUP_PROVIDER, _groupProvider);
+		portletRequest.setAttribute(
+			LayoutAdminWebKeys.LAYOUT_CONVERTER_REGISTRY,
+			_layoutConverterRegistry);
+		portletRequest.setAttribute(
+			LayoutAdminWebKeys.LAYOUT_COPY_HELPER, _layoutCopyHelper);
+		portletRequest.setAttribute(
+			LayoutEditorTypeConfiguration.class.getName(),
+			_layoutEditorTypeConfiguration);
+		portletRequest.setAttribute(
+			StagingGroupHelper.class.getName(), _stagingGroupHelper);
+
+		portletRequest.setAttribute(
+			LayoutAdminWebKeys.LAYOUT_PAGE_LAYOUT_ADMIN_DISPLAY_CONTEXT,
+			new LayoutsAdminDisplayContext(
+				_layoutConverterConfiguration,
+				_portal.getLiferayPortletRequest(portletRequest),
+				_portal.getLiferayPortletResponse(portletResponse),
+				_stagingGroupHelper));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
