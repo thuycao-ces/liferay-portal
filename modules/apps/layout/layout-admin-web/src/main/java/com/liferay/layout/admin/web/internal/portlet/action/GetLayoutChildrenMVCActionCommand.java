@@ -19,6 +19,7 @@ import com.liferay.layout.admin.web.internal.configuration.LayoutConverterConfig
 import com.liferay.layout.admin.web.internal.display.context.LayoutsAdminDisplayContext;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -31,10 +32,12 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.staging.StagingGroupHelper;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -53,7 +56,8 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class GetLayoutChildrenMVCActionCommand extends BaseMVCActionCommand {
+public class GetLayoutChildrenMVCActionCommand
+	extends BaseAddLayoutMVCActionCommand {
 
 	@Activate
 	@Modified
@@ -69,40 +73,49 @@ public class GetLayoutChildrenMVCActionCommand extends BaseMVCActionCommand {
 
 		long plid = ParamUtil.getLong(actionRequest, "plid");
 
-		Layout layout = _layoutLocalService.fetchLayout(plid);
+		writeChildLayoutsAsJSON(
+			actionRequest, actionResponse, _layoutConverterConfiguration, plid);
+	}
 
-		LayoutsAdminDisplayContext layoutsAdminDisplayContext =
-			new LayoutsAdminDisplayContext(
-				_layoutConverterConfiguration,
-				_portal.getLiferayPortletRequest(actionRequest),
-				_portal.getLiferayPortletResponse(actionResponse),
-				_stagingGroupHelper);
+	protected void writeChildLayoutsAsJSON(
+			ActionRequest actionRequest, ActionResponse actionResponse,
+			LayoutConverterConfiguration layoutConverterConfiguration,
+			long plid)
+		throws Exception {
+
+		Layout layout = layoutLocalService.fetchLayout(plid);
 
 		JSONArray jsonArray = null;
 
 		if (layout != null) {
+			LayoutsAdminDisplayContext layoutsAdminDisplayContext =
+				new LayoutsAdminDisplayContext(
+					layoutConverterConfiguration,
+					portal.getLiferayPortletRequest(actionRequest),
+					portal.getLiferayPortletResponse(actionResponse),
+					stagingGroupHelper);
+
 			jsonArray = layoutsAdminDisplayContext.getLayoutsJSONArray(
 				layout.getLayoutId(), layout.isPrivateLayout());
 		}
 		else {
-			jsonArray = JSONFactoryUtil.createJSONArray();
+			jsonArray = jsonFactory.createJSONArray();
 		}
 
 		JSONObject jsonObject = JSONUtil.put("children", jsonArray);
 
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse, jsonObject);
+
+		hideDefaultSuccessMessage(actionRequest);
 	}
 
 	private volatile LayoutConverterConfiguration _layoutConverterConfiguration;
 
 	@Reference
-	private LayoutLocalService _layoutLocalService;
+	protected JSONFactory jsonFactory;
 
 	@Reference
-	private Portal _portal;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
+	protected StagingGroupHelper stagingGroupHelper;
 
 }

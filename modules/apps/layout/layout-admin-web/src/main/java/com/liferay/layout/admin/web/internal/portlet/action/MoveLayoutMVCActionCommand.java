@@ -15,6 +15,8 @@
 package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.admin.web.internal.configuration.LayoutConverterConfiguration;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.LayoutService;
@@ -23,8 +25,12 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+
+import java.util.Map;
 
 /**
  * @author Eudaldo Alonso
@@ -37,7 +43,15 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
+public class MoveLayoutMVCActionCommand
+	extends GetLayoutChildrenMVCActionCommand {
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_layoutConverterConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutConverterConfiguration.class, properties);
+	}
 
 	@Override
 	protected void doProcessAction(
@@ -60,7 +74,15 @@ public class MoveLayoutMVCActionCommand extends BaseAddLayoutMVCActionCommand {
 			_layoutService.updateParentLayoutIdAndPriority(
 				plid, parentPlid, priority);
 		}
+
+		long checkPlid = ParamUtil.getLong(actionRequest, "checkPlid");
+
+		writeChildLayoutsAsJSON(
+			actionRequest, actionResponse, _layoutConverterConfiguration,
+			checkPlid);
 	}
+
+	private volatile LayoutConverterConfiguration _layoutConverterConfiguration;
 
 	@Reference
 	private LayoutService _layoutService;

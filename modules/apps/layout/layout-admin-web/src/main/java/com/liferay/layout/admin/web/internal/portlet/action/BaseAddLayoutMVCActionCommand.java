@@ -34,6 +34,8 @@ import javax.portlet.WindowState;
 
 import org.osgi.service.component.annotations.Reference;
 
+import java.io.IOException;
+
 /**
  * @author Pavel Savinov
  */
