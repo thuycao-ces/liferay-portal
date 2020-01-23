@@ -100,7 +100,7 @@ public class UserReindexerUtil {
 					if (_log.isDebugEnabled()) {
 						_log.debug(
 							StringBundler.concat(
-								"Already executed indexer request", i,
+								"Already executed indexer request ", i,
 								"in another thread: ", userIndexerRequest));
 					}
 

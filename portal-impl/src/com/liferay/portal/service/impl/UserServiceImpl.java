@@ -39,8 +39,6 @@ import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyUtil;
@@ -71,6 +69,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
 import com.liferay.portal.service.base.UserServiceBaseImpl;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portlet.usersadmin.reindexer.UserReindexerUtil;
 import com.liferay.users.admin.kernel.util.UsersAdminUtil;
 
 import java.util.ArrayList;
@@ -617,10 +616,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				user.getUserId(), announcementsDelivers);
 
 			if (indexingEnabled) {
-				Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-					User.class);
-
-				indexer.reindex(user);
+				UserReindexerUtil.reindex(user);
 			}
 
 			return user;

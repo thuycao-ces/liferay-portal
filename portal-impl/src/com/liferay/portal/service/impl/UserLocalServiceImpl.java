@@ -152,6 +152,7 @@ import com.liferay.portal.security.pwd.RegExpToolkit;
 import com.liferay.portal.service.base.UserLocalServiceBaseImpl;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portlet.usersadmin.reindexer.UserReindexerUtil;
 import com.liferay.registry.Registry;
 import com.liferay.registry.RegistryUtil;
 import com.liferay.registry.dependency.ServiceDependencyListener;
@@ -4464,10 +4465,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			// Indexer
 
-			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-				User.class);
-
-			indexer.reindex(user);
+			UserReindexerUtil.reindex(user);
 		}
 
 		user.setStatus(WorkflowConstants.STATUS_DRAFT);
@@ -5301,10 +5299,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		// Indexer
 
 		if ((serviceContext == null) || serviceContext.isIndexingEnabled()) {
-			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-				User.class);
-
-			indexer.reindex(user);
+			UserReindexerUtil.reindex(user);
 		}
 
 		// Email address verification
@@ -6091,46 +6086,19 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	protected void reindex(final List<User> users) throws SearchException {
-		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			User.class);
-
-		try {
-			indexer.reindex(users);
-		}
-		catch (SearchException searchException) {
-			throw new SystemException(searchException);
-		}
+		UserReindexerUtil.reindex(users);
 	}
 
 	protected void reindex(long userId) throws SearchException {
-		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			User.class);
-
-		User user = userLocalService.fetchUser(userId);
-
-		indexer.reindex(user);
+		UserReindexerUtil.reindex(userId);
 	}
 
 	protected void reindex(long[] userIds) throws SearchException {
-		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			User.class);
-
-		List<User> users = new ArrayList<>(userIds.length);
-
-		for (Long userId : userIds) {
-			User user = userLocalService.fetchUser(userId);
-
-			users.add(user);
-		}
-
-		indexer.reindex(users);
+		UserReindexerUtil.reindex(userIds);
 	}
 
 	protected void reindex(final User user) throws SearchException {
-		Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
-			User.class);
-
-		indexer.reindex(user);
+		UserReindexerUtil.reindex(user);
 	}
 
 	protected User resetFailedLoginAttempts(User user) {
