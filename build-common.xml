@@ -1274,6 +1274,9 @@ artifact.url=${remote.repository.url}/com/liferay/portal/com.liferay.${processed
 						/>
 					</unzip>
 
+					<replace file="${project.dir}/tools/sdk/build.properties" token="cdn.lfrs.sl/repository" value="repository-cdn" />
+					<replace file="${project.dir}/tools/sdk/ivy-settings.xml" token="cdn.lfrs.sl/repository" value="repository-cdn" />
+
 					<update-sdk-properties />
 				</then>
 			</if>
