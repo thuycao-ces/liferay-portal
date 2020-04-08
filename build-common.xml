@@ -1179,8 +1179,8 @@ Please set the environment variable ANT_OPTS to the recommended value of
 						/>
 					</unzip>
 
-					<replace file="${project.dir}/tools/sdk/build.properties" token="cdn.lfrs.sl/repository" value="repository-cdn" />
-					<replace file="${project.dir}/tools/sdk/ivy-settings.xml" token="cdn.lfrs.sl/repository" value="repository-cdn" />
+					<replace file="${project.dir}/tools/sdk/build.properties" token="cdn.lfrs.sl/repository" value="repository" />
+					<replace file="${project.dir}/tools/sdk/ivy-settings.xml" token="cdn.lfrs.sl/repository" value="repository" />
 
 					<update-sdk-properties />
 				</then>
