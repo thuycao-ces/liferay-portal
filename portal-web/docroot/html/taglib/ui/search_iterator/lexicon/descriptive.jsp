@@ -96,7 +96,7 @@ for (ResultRowSplitterEntry resultRowSplitterEntry : resultRowSplitterEntries) {
 			}
 		%>
 
-			<li class="list-group-item list-group-item-flex <%= GetterUtil.getString(row.getClassName()) %> <%= row.getCssClass() %> <%= rowIsChecked ? "active" : StringPool.BLANK %> <%= Validator.isNotNull(row.getState()) ? "list-group-item-" + row.getState() : StringPool.BLANK %>" data-qa-id="row" <%= AUIUtil.buildData(data) %>>
+			<li class="list-group-item list-group-item-flex <%= GetterUtil.getString(row.getClassName()) %><%= StringPool.SPACE %><%= row.getCssClass() %><%= StringPool.SPACE %><%= rowIsChecked ? "active" : StringPool.BLANK %><%= StringPool.SPACE %><%= Validator.isNotNull(row.getState()) ? "list-group-item-" + row.getState() : StringPool.BLANK %>" data-qa-id="row" <%= AUIUtil.buildData(data) %>>
 				<c:if test="<%= rowChecker != null %>">
 					<div class="autofit-col">
 						<div class="checkbox">
@@ -116,7 +116,7 @@ for (ResultRowSplitterEntry resultRowSplitterEntry : resultRowSplitterEntries) {
 					request.setAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW_ENTRY, entry);
 				%>
 
-					<div class='<%= entry.getCssClass() %> <%= (entry.getColspan() > 1) ? "autofit-col autofit-col-expand" : "autofit-col" %>' data-qa-id="rowItemContent">
+					<div class='<%= entry.getCssClass() %><%= StringPool.SPACE %><%= (entry.getColspan() > 1) ? "autofit-col autofit-col-expand" : "autofit-col" %>' data-qa-id="rowItemContent">
 
 						<%
 						entry.print(pageContext.getOut(), request, response);

@@ -51,7 +51,7 @@ summary.setHighlight(highlightEnabled);
 summary.setQueryTerms(queryTerms);
 %>
 
-<div class='app-view-entry app-view-search-entry-taglib entry-display-style <%= showCheckbox ? "selectable" : StringPool.BLANK %> <%= cssClass %>' data-title="<%= HtmlUtil.escapeAttribute(StringUtil.shorten(title, 60)) %>">
+<div class='app-view-entry app-view-search-entry-taglib entry-display-style <%= showCheckbox ? "selectable" : StringPool.BLANK %><%= StringPool.SPACE %><%= cssClass %>' data-title="<%= HtmlUtil.escapeAttribute(StringUtil.shorten(title, 60)) %>">
 	<a class="entry-link" href="<%= HtmlUtil.escapeAttribute(url) %>" title="<%= HtmlUtil.escapeAttribute(linkTitle) %>">
 		<c:if test="<%= Validator.isNotNull(thumbnailSrc) %>">
 			<div class="entry-thumbnail">

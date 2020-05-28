@@ -20,8 +20,8 @@
 String fieldCss = AUIUtil.buildCss("field-wrapper", false, first, last, cssClass);
 %>
 
-<div class="<%= controlGroupCss %> <%= fieldCss %>" <%= AUIUtil.buildData(data) %>>
-	<<%= showForLabel ? "label" : "span" %> <%= AUIUtil.buildLabel("wrapper", inlineField, showForLabel, name, disabled) %>>
+<div class="<%= controlGroupCss %><%= StringPool.SPACE %><%= fieldCss %>" <%= AUIUtil.buildData(data) %>>
+	<<%= showForLabel ? "label" : "span" %><%= StringPool.SPACE %><%= AUIUtil.buildLabel("wrapper", inlineField, showForLabel, name, disabled) %>>
 		<liferay-ui:message key="<%= label %>" localizeKey="<%= localizeLabel %>" />
 
 		<c:if test="<%= required %>">

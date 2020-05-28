@@ -28,7 +28,7 @@ else if (collapsible) {
 }
 %>
 
-<fieldset aria-labelledby="<%= id %>Title" class="<%= collapsible ? "panel panel-default" : StringPool.BLANK %> <%= cssClass %>" <%= Validator.isNotNull(id) ? "id=\"" + id + "\"" : StringPool.BLANK %> <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %> role="group">
+<fieldset aria-labelledby="<%= id %>Title" class="<%= collapsible ? "panel panel-default" : StringPool.BLANK %><%= StringPool.SPACE %><%= cssClass %>" <%= Validator.isNotNull(id) ? "id=\"" + id + "\"" : StringPool.BLANK %><%= StringPool.SPACE %><%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %> role="group">
 	<c:if test="<%= Validator.isNotNull(label) %>">
 		<liferay-util:buffer
 			var="header"
@@ -62,5 +62,5 @@ else if (collapsible) {
 		</div>
 	</c:if>
 
-	<div aria-labelledby="<%= id %>Header" class='<%= !collapsed ? "show" : StringPool.BLANK %> <%= collapsible ? "panel-collapse collapse" : StringPool.BLANK %> <%= column ? "row" : StringPool.BLANK %>' id="<%= id %>Content" role="presentation">
+	<div aria-labelledby="<%= id %>Header" class='<%= !collapsed ? "show" : StringPool.BLANK %><%= StringPool.SPACE %><%= collapsible ? "panel-collapse collapse" : StringPool.BLANK %><%= StringPool.SPACE %><%= column ? "row" : StringPool.BLANK %>' id="<%= id %>Content" role="presentation">
 		<div class="panel-body">

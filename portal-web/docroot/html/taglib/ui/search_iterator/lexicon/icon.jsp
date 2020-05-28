@@ -95,7 +95,7 @@ for (int i = 0; i < resultRowSplitterEntries.size(); i++) {
 			}
 		%>
 
-			<li class="<%= GetterUtil.getString(row.getClassName()) %> <%= row.getCssClass() %> <%= rowIsChecked ? "active" : StringPool.BLANK %>" data-qa-id="row" <%= AUIUtil.buildData(data) %>>
+			<li class="<%= GetterUtil.getString(row.getClassName()) %><%= StringPool.SPACE %><%= row.getCssClass() %><%= StringPool.SPACE %><%= rowIsChecked ? "active" : StringPool.BLANK %>" data-qa-id="row" <%= AUIUtil.buildData(data) %>>
 
 				<%
 				for (int k = 0; k < entries.size(); k++) {

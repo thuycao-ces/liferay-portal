@@ -51,7 +51,7 @@ if (iteratorURL != null) {
 	</div>
 </c:if>
 
-<div class='lfr-search-container lfr-search-container-wrapper <%= resultRows.isEmpty() ? "hide" : StringPool.BLANK %> <%= searchContainer.getCssClass() %>'>
+<div class='lfr-search-container lfr-search-container-wrapper <%= resultRows.isEmpty() ? "hide" : StringPool.BLANK %><%= StringPool.SPACE %><%= searchContainer.getCssClass() %>'>
 	<c:if test="<%= PropsValues.SEARCH_CONTAINER_SHOW_PAGINATION_TOP && (resultRows.size() > PropsValues.SEARCH_CONTAINER_SHOW_PAGINATION_TOP_DELTA) && paginate %>">
 		<div class="taglib-search-iterator-page-iterator-top">
 			<liferay-ui:search-paginator
@@ -243,7 +243,7 @@ if (iteratorURL != null) {
 			Map<String, Object> data = row.getData();
 		%>
 
-			<tr class="<%= GetterUtil.getString(row.getClassName()) %> <%= row.getCssClass() %> <%= row.getState() %> <%= rowIsChecked ? "info" : StringPool.BLANK %>" <%= AUIUtil.buildData(data) %>>
+			<tr class="<%= GetterUtil.getString(row.getClassName()) %><%= StringPool.SPACE %><%= row.getCssClass() %><%= StringPool.SPACE %><%= row.getState() %><%= StringPool.SPACE %><%= rowIsChecked ? "info" : StringPool.BLANK %>" <%= AUIUtil.buildData(data) %>>
 
 			<%
 			for (int j = 0; j < entries.size(); j++) {

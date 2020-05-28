@@ -16,4 +16,4 @@
 
 <%@ include file="/html/taglib/aui/col/init.jsp" %>
 
-<div class="<%= gridCssClasses %> <%= cssClass %>" id="<%= id %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>
+<div class="<%= gridCssClasses %><%= StringPool.SPACE %><%= cssClass %>" id="<%= id %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>

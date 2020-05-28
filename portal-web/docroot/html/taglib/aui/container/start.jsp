@@ -16,4 +16,4 @@
 
 <%@ include file="/html/taglib/aui/container/init.jsp" %>
 
-<div class="container<%= fluid ? "-fluid" : StringPool.BLANK %> <%= cssClass %>" id="<%= id %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>
+<div class="container<%= fluid ? "-fluid" : StringPool.BLANK %><%= StringPool.SPACE %><%= cssClass %>" id="<%= id %>" <%= InlineUtil.buildDynamicAttributes(dynamicAttributes) %>>

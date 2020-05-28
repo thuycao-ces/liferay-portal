@@ -16,7 +16,7 @@
 
 <%@ include file="/html/taglib/ui/app_view_entry/init.jsp" %>
 
-<div class="app-view-entry app-view-entry-taglib display-<%= displayStyle %> entry-display-style <%= showCheckbox ? "selectable" : StringPool.BLANK %> <%= cssClass %>" <%= AUIUtil.buildData(data) %> data-draggable="<%= showCheckbox ? Boolean.TRUE.toString() : Boolean.FALSE.toString() %>" data-title="<%= HtmlUtil.escapeAttribute(shortTitle) %>">
+<div class="app-view-entry app-view-entry-taglib display-<%= displayStyle %> entry-display-style <%= showCheckbox ? "selectable" : StringPool.BLANK %><%= StringPool.SPACE %><%= cssClass %>" <%= AUIUtil.buildData(data) %> data-draggable="<%= showCheckbox ? Boolean.TRUE.toString() : Boolean.FALSE.toString() %>" data-title="<%= HtmlUtil.escapeAttribute(shortTitle) %>">
 	<c:choose>
 		<c:when test="<%= Validator.isNull(url) %>">
 			<span class="entry-link" data-folder="<%= folder ? Boolean.TRUE.toString() : Boolean.FALSE.toString() %>" data-folder-id="<%= rowCheckerId %>" title="<%= linkTitle %>">

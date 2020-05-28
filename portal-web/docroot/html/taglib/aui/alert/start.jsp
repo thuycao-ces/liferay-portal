@@ -16,4 +16,4 @@
 
 <%@ include file="/html/taglib/aui/alert/init.jsp" %>
 
-<div class="alert alert-<%= type %> <%= cssClass %>" id="<%= id %>">
+<div class="alert alert-<%= type %><%= StringPool.SPACE %><%= cssClass %>" id="<%= id %>">

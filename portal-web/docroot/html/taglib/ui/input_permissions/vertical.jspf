@@ -114,7 +114,7 @@ ServiceContext#deriveDefaultPermissions(long, String).
 
 						</c:if>
 
-						<input <%= checked ? "checked" : "" %> <%= disabled ? "disabled" : "" %> id="<%= checkboxFieldId %>" name="<%= checkboxFieldName %>" title='<%= LanguageUtil.format(request, "give-x-permission-to-users-with-role-x", new Object[] {ResourceActionsUtil.getAction(request, action), role.getTitle(themeDisplay.getLocale())}, false) %>' type="checkbox" value="<%= action %>" />
+						<input <%= checked ? "checked" : "" %><%= StringPool.SPACE %><%= disabled ? "disabled" : "" %> id="<%= checkboxFieldId %>" name="<%= checkboxFieldName %>" title='<%= LanguageUtil.format(request, "give-x-permission-to-users-with-role-x", new Object[] {ResourceActionsUtil.getAction(request, action), role.getTitle(themeDisplay.getLocale())}, false) %>' type="checkbox" value="<%= action %>" />
 					</td>
 
 				<%
