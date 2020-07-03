@@ -17,9 +17,11 @@ package com.liferay.portal.workflow.task.web.portlet.action;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
 import com.liferay.portal.workflow.task.web.permission.WorkflowTaskPermissionChecker;
@@ -50,9 +52,12 @@ public class AssignTaskMVCActionCommand
 		WorkflowTask workflowTask = WorkflowTaskManagerUtil.getWorkflowTask(
 			themeDisplay.getCompanyId(), workflowTaskId);
 
+		long groupId =
+			GetterUtil.getLong(workflowTask.getOptionalAttributes().get(
+				WorkflowConstants.CONTEXT_GROUP_ID));
+
 		if (!_workflowTaskPermissionChecker.hasPermission(
-				themeDisplay.getScopeGroupId(), workflowTask,
-				themeDisplay.getPermissionChecker())) {
+				groupId, workflowTask, themeDisplay.getPermissionChecker())) {
 
 			throw new PrincipalException(
 				String.format(
