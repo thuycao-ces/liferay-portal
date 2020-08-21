@@ -4,6 +4,12 @@
 }
 
 .controls-hidden {
+	.autofit-col-toolbar {
+		a,div {
+			visibility: hidden !important;
+		}
+	}
+
 	.lfr-configurator-visibility {
 		display: none;
 	}

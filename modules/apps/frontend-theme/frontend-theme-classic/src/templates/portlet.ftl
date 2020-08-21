@@ -86,7 +86,7 @@
 				</#if>
 
 				<#if portlet_header?has_content>
-					<div class="autofit-col autofit-col-end">
+					<div class="autofit-col autofit-col-end autofit-col-toolbar">
 						<div class="autofit-section">
 							${portlet_header}
 						</div>
