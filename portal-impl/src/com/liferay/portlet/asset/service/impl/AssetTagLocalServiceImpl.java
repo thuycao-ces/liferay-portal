@@ -122,9 +122,8 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 		List<AssetTag> tags = new ArrayList<>();
 
 		for (String name : names) {
-
-			String nameValid = StringUtil.toLowerCase(name.replaceAll("\\s+",""));
-			AssetTag tag = fetchTag(group.getGroupId(), nameValid);
+			name = StringUtil.toLowerCase(StringUtil.trim(name));
+			AssetTag tag = fetchTag(group.getGroupId(), name);
 
 			if (tag == null) {
 				ServiceContext serviceContext = new ServiceContext();
