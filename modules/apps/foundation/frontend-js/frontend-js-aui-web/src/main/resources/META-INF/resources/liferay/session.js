@@ -505,6 +505,7 @@ AUI.add(
 						instance._intervalId = host.registerInterval(
 							function(elapsed, interval, hasWarned, hasExpired, warningMoment, expirationMoment) {
 								if (!hasWarned) {
+									host.set('sessionState', 'active', SRC_EVENT_OBJ);
 									instance._uiSetActivated();
 								}
 								else if (!hasExpired) {
