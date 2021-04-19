@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +48,18 @@ public class CalendarDisplayContext {
 
 		List<Calendar> otherCalendars = new ArrayList<>();
 
+		Calendar calendar = null;
+
 		for (long calendarId : calendarIds) {
-			Calendar calendar = _calendarService.fetchCalendar(calendarId);
+
+			try
+			{
+				calendar = _calendarService.fetchCalendar(calendarId);
+			}
+			catch(Exception e)
+			{
+				_log.error(e.getMessage());
+			}
 
 			if (calendar == null) {
 				continue;
@@ -105,5 +117,6 @@ public class CalendarDisplayContext {
 	private final CalendarService _calendarService;
 	private final GroupLocalService _groupLocalService;
 	private final ThemeDisplay _themeDisplay;
+	private static final Log _log = LogFactoryUtil.getLog(CalendarDisplayContext.class);
 
 }
