@@ -20,10 +20,8 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.util.*;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
@@ -32,6 +30,7 @@ import com.liferay.portal.workflow.task.web.permission.WorkflowTaskPermissionChe
 
 import java.io.IOException;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import javax.portlet.ActionRequest;
@@ -123,14 +122,16 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 			WorkflowTask workflowTask, ThemeDisplay themeDisplay)
 		throws PortalException {
 
+		long groupId = MapUtil.getLong(workflowTask.getOptionalAttributes(), WorkflowConstants.CONTEXT_GROUP_ID);
+
 		if (!_workflowTaskPermissionChecker.hasPermission(
-				themeDisplay.getScopeGroupId(), workflowTask,
+				groupId, workflowTask,
 				themeDisplay.getPermissionChecker())) {
 
 			throw new PrincipalException(
 				String.format(
 					"User %d does not have permission to view task %d",
-					themeDisplay.getUserId(),
+					groupId,
 					workflowTask.getWorkflowTaskId()));
 		}
 	}

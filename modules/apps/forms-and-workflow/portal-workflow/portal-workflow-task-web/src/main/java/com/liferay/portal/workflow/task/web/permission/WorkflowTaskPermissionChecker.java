@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
  * Software Foundation; either version 2.1 of the License, or (at your option)
  * any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
@@ -14,84 +14,120 @@
 
 package com.liferay.portal.workflow.task.web.permission;
 
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.*;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.workflow.WorkflowTask;
-import com.liferay.portal.kernel.workflow.WorkflowTaskAssignee;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.workflow.*;
 
 /**
  * @author Adam Brandizzi
  */
 public class WorkflowTaskPermissionChecker {
 
-	public boolean hasPermission(
-		long groupId, WorkflowTask workflowTask,
-		PermissionChecker permissionChecker) {
+      public boolean hasPermission(
+            long groupId, WorkflowTask workflowTask,
+            PermissionChecker permissionChecker) throws PortalException {
 
-		if (permissionChecker.isOmniadmin() ||
-			permissionChecker.isCompanyAdmin()) {
+            if (permissionChecker.isOmniadmin() ||
+                  permissionChecker.isCompanyAdmin()) {
 
-			return true;
-		}
+                  return true;
+            }
 
-		if (!permissionChecker.isContentReviewer(
-				permissionChecker.getCompanyId(), groupId)) {
+            if (hasViewPermission(workflowTask)) {
 
-			return false;
-		}
+                  return true;
+            }
 
-		long[] roleIds = permissionChecker.getRoleIds(
-			permissionChecker.getUserId(), groupId);
+            if (!permissionChecker.isContentReviewer(
+                  permissionChecker.getCompanyId(), groupId)) {
 
-		for (WorkflowTaskAssignee workflowTaskAssignee :
-				workflowTask.getWorkflowTaskAssignees()) {
+                  return false;
+            }
 
-			if (isWorkflowTaskAssignableToRoles(
-					workflowTaskAssignee, roleIds) ||
-				isWorkflowTaskAssignableToUser(
-					workflowTaskAssignee, permissionChecker.getUserId())) {
+            long[] roleIds = permissionChecker.getRoleIds(
+                  permissionChecker.getUserId(), groupId);
 
-				return true;
-			}
-		}
+            for (WorkflowTaskAssignee workflowTaskAssignee :
+                  workflowTask.getWorkflowTaskAssignees()) {
 
-		return false;
-	}
+                  if (isWorkflowTaskAssignableToRoles(
+                        workflowTaskAssignee, roleIds) ||
+                        isWorkflowTaskAssignableToUser(
+                              workflowTaskAssignee, permissionChecker.getUserId())) {
 
-	protected boolean isWorkflowTaskAssignableToRoles(
-		WorkflowTaskAssignee workflowTaskAssignee, long[] roleIds) {
+                        return true;
+                  }
+            }
 
-		String assigneeClassName = workflowTaskAssignee.getAssigneeClassName();
+            return false;
+      }
 
-		if (!assigneeClassName.equals(Role.class.getName())) {
-			return false;
-		}
+      protected boolean hasViewPermission(WorkflowTask workflowTask) {
 
-		if (ArrayUtil.contains(
-				roleIds, workflowTaskAssignee.getAssigneeClassPK())) {
+            String className = MapUtil.getString(workflowTask.getOptionalAttributes(), WorkflowConstants.CONTEXT_ENTRY_CLASS_NAME);
 
-			return true;
-		}
+            long classPK = MapUtil.getLong(workflowTask.getOptionalAttributes(), WorkflowConstants.CONTEXT_ENTRY_CLASS_PK);
 
-		return false;
-	}
+            WorkflowHandler workflowHandler = WorkflowHandlerRegistryUtil.getWorkflowHandler(className);
 
-	protected boolean isWorkflowTaskAssignableToUser(
-		WorkflowTaskAssignee workflowTaskAssignee, long userId) {
+            if (workflowHandler == null) {
+                  return false;
+            }
 
-		String assigneeClassName = workflowTaskAssignee.getAssigneeClassName();
+            try {
+                  AssetRenderer assetRenderer = workflowHandler.getAssetRenderer(classPK);
 
-		if (!assigneeClassName.equals(User.class.getName())) {
-			return false;
-		}
+                  if (assetRenderer == null) {
+                        return false;
+                  }
 
-		if (workflowTaskAssignee.getAssigneeClassPK() == userId) {
-			return true;
-		}
+                  return true;
+            } catch (PortalException e) {
+                  _log.info(e.getMessage());
+            }
 
-		return false;
-	}
+            return false;
+      }
 
+      protected boolean isWorkflowTaskAssignableToRoles(
+            WorkflowTaskAssignee workflowTaskAssignee, long[] roleIds) {
+
+            String assigneeClassName = workflowTaskAssignee.getAssigneeClassName();
+
+            if (!assigneeClassName.equals(Role.class.getName())) {
+                  return false;
+            }
+
+            if (ArrayUtil.contains(
+                  roleIds, workflowTaskAssignee.getAssigneeClassPK())) {
+
+                  return true;
+            }
+
+            return false;
+      }
+
+      protected boolean isWorkflowTaskAssignableToUser(
+            WorkflowTaskAssignee workflowTaskAssignee, long userId) {
+
+            String assigneeClassName = workflowTaskAssignee.getAssigneeClassName();
+
+            if (!assigneeClassName.equals(User.class.getName())) {
+                  return false;
+            }
+
+            if (workflowTaskAssignee.getAssigneeClassPK() == userId) {
+                  return true;
+            }
+
+            return false;
+      }
+
+      private static final Log _log = LogFactoryUtil.getLog(WorkflowTaskPermissionChecker.class);
 }
