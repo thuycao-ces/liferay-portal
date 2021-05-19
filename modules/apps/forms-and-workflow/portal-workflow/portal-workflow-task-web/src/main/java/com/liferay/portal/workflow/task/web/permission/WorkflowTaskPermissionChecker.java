@@ -14,12 +14,16 @@
 
 package com.liferay.portal.workflow.task.web.permission;
 
+import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.workflow.WorkflowTask;
-import com.liferay.portal.kernel.workflow.WorkflowTaskAssignee;
+import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.workflow.*;
 
 /**
  * @author Adam Brandizzi
@@ -32,6 +36,11 @@ public class WorkflowTaskPermissionChecker {
 
 		if (permissionChecker.isOmniadmin() ||
 			permissionChecker.isCompanyAdmin()) {
+
+			return true;
+		}
+
+		if (hasViewPermission(workflowTask)) {
 
 			return true;
 		}
@@ -55,6 +64,33 @@ public class WorkflowTaskPermissionChecker {
 
 				return true;
 			}
+		}
+
+		return false;
+	}
+
+	protected boolean hasViewPermission(WorkflowTask workflowTask) {
+
+		String className = MapUtil.getString(workflowTask.getOptionalAttributes(), WorkflowConstants.CONTEXT_ENTRY_CLASS_NAME);
+
+		long classPK = MapUtil.getLong(workflowTask.getOptionalAttributes(), WorkflowConstants.CONTEXT_ENTRY_CLASS_PK);
+
+		WorkflowHandler workflowHandler = WorkflowHandlerRegistryUtil.getWorkflowHandler(className);
+
+		if (workflowHandler == null) {
+			return false;
+		}
+
+		try {
+			AssetRenderer assetRenderer = workflowHandler.getAssetRenderer(classPK);
+
+			if (assetRenderer == null) {
+				return false;
+			}
+
+			return true;
+		} catch (PortalException e) {
+			_log.info(e.getMessage());
 		}
 
 		return false;
@@ -94,4 +130,5 @@ public class WorkflowTaskPermissionChecker {
 		return false;
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(WorkflowTaskPermissionChecker.class);
 }
