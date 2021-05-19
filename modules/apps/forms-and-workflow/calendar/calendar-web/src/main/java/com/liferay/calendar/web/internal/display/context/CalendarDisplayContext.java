@@ -19,14 +19,17 @@ import com.liferay.calendar.model.CalendarResource;
 import com.liferay.calendar.service.CalendarLocalService;
 import com.liferay.calendar.service.CalendarService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.LogUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.util.log4j.Log4JUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Adam Brandizzi
@@ -58,7 +61,9 @@ public class CalendarDisplayContext {
 			}
 			catch(Exception e)
 			{
-				_log.error(e.getMessage());
+				if(_log.isInfoEnabled()){
+					_log.info(e.getMessage());
+				}
 			}
 
 			if (calendar == null) {
