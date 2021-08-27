@@ -57,6 +57,33 @@ public class LayoutSEOEntryServiceImpl extends LayoutSEOEntryServiceBaseImpl {
 	}
 
 	@Override
+	public LayoutSEOEntry updateLayoutCopySEOEntry(
+			long groupId, boolean privateLayout, long layoutId,
+			long parentDDMStorageId, boolean canonicalURLEnabled,
+			Map<Locale, String> canonicalURLMap,
+			boolean openGraphDescriptionEnabled,
+			Map<Locale, String> openGraphDescriptionMap,
+			Map<Locale, String> openGraphImageAltMap,
+			long openGraphImageFileEntryId, boolean openGraphTitleEnabled,
+			Map<Locale, String> openGraphTitleMap,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		Layout layout = layoutLocalService.getLayout(
+			groupId, privateLayout, layoutId);
+
+		LayoutPermissionUtil.check(
+			getPermissionChecker(), layout, ActionKeys.UPDATE);
+
+		return layoutSEOEntryLocalService.updateLayoutCopySEOEntry(
+			getUserId(), groupId, privateLayout, layoutId, parentDDMStorageId,
+			canonicalURLEnabled, canonicalURLMap, openGraphDescriptionEnabled,
+			openGraphDescriptionMap, openGraphImageAltMap,
+			openGraphImageFileEntryId, openGraphTitleEnabled, openGraphTitleMap,
+			serviceContext);
+	}
+
+	@Override
 	public LayoutSEOEntry updateLayoutSEOEntry(
 			long groupId, boolean privateLayout, long layoutId,
 			boolean canonicalURLEnabled, Map<Locale, String> canonicalURLMap,
