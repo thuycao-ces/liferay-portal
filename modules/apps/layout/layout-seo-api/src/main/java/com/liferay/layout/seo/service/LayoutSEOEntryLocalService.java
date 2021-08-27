@@ -336,6 +336,18 @@ public interface LayoutSEOEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public LayoutSEOEntry updateLayoutCopySEOEntry(
+			long userId, long groupId, boolean privateLayout, long layoutId,
+			long parentDDMStorageId, boolean canonicalURLEnabled,
+			Map<Locale, String> canonicalURLMap,
+			boolean openGraphDescriptionEnabled,
+			Map<Locale, String> openGraphDescriptionMap,
+			Map<Locale, String> openGraphImageAltMap,
+			long openGraphImageFileEntryId, boolean openGraphTitleEnabled,
+			Map<Locale, String> openGraphTitleMap,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Updates the layout seo entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

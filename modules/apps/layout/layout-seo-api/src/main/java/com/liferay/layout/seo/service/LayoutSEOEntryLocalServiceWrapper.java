@@ -417,6 +417,27 @@ public class LayoutSEOEntryLocalServiceWrapper
 			userId, groupId, privateLayout, layoutId, serviceContext);
 	}
 
+	@Override
+	public LayoutSEOEntry updateLayoutCopySEOEntry(
+			long userId, long groupId, boolean privateLayout, long layoutId,
+			long parentDDMStorageId, boolean canonicalURLEnabled,
+			java.util.Map<java.util.Locale, String> canonicalURLMap,
+			boolean openGraphDescriptionEnabled,
+			java.util.Map<java.util.Locale, String> openGraphDescriptionMap,
+			java.util.Map<java.util.Locale, String> openGraphImageAltMap,
+			long openGraphImageFileEntryId, boolean openGraphTitleEnabled,
+			java.util.Map<java.util.Locale, String> openGraphTitleMap,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutSEOEntryLocalService.updateLayoutCopySEOEntry(
+			userId, groupId, privateLayout, layoutId, parentDDMStorageId,
+			canonicalURLEnabled, canonicalURLMap, openGraphDescriptionEnabled,
+			openGraphDescriptionMap, openGraphImageAltMap,
+			openGraphImageFileEntryId, openGraphTitleEnabled, openGraphTitleMap,
+			serviceContext);
+	}
+
 	/**
 	 * Updates the layout seo entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
