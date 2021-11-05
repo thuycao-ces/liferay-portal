@@ -646,12 +646,16 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			(type == RoleConstants.TYPE_ORGANIZATION) ||
 			(type == RoleConstants.TYPE_SITE)) {
 
+			DynamicQuery userDynamicQuery = getUserActiveDynamicQuery();
 			DynamicQuery userGroupRoleDynamicQuery =
 				_userGroupRoleLocalService.dynamicQuery();
 
 			Property property = PropertyFactoryUtil.forName("roleId");
 
 			userGroupRoleDynamicQuery.add(property.eq(roleId));
+
+			userGroupRoleDynamicQuery.add(
+				PropertyFactoryUtil.forName("userId").in(userDynamicQuery));
 
 			userGroupRoleDynamicQuery.setProjection(
 				ProjectionFactoryUtil.countDistinct("userId"));
@@ -1964,6 +1968,21 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			myAccountPortletId, PortletKeys.MY_PAGES,
 			PortletKeys.MY_WORKFLOW_INSTANCE, PortletKeys.MY_WORKFLOW_TASK
 		};
+	}
+
+	protected DynamicQuery getUserActiveDynamicQuery(){
+
+		DynamicQuery userDynamicQuery = _userLocalService.dynamicQuery();
+
+		Property userProperty = PropertyFactoryUtil.forName("status");
+
+		userDynamicQuery.add(
+			userProperty.eq(WorkflowConstants.STATUS_APPROVED));
+
+		userDynamicQuery.setProjection(
+			ProjectionFactoryUtil.property("userId"));
+
+		return userDynamicQuery;
 	}
 
 	protected Map<Team, Role> getTeamRoleMap(
